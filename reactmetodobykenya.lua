@@ -1,115 +1,26 @@
+local player = game.Players.LocalPlayer local mouse = player:GetMouse() local runService = game:GetService("RunService") local userInput = game:GetService("UserInputService") local character = player.Character or player.CharacterAdded:Wait() local ball = workspace:WaitForChild("TPSSystem"):WaitForChild("TPS") local followBall = false local isMovingManually = false
 
--- KTC HUB - REACTS MODULE + INFINITE DRIBBLE GUI
--- Autor: Tps Abz
+local gui = Instance.new("ScreenGui", game.CoreGui) local frame = Instance.new("Frame", gui) frame.Size = UDim2.new(0, 250, 0, 300) frame.Position = UDim2.new(0, 50, 0, 100) frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25) frame.Active = true frame.Draggable = true frame.Name = "KTC_REACTS"
 
--- 🦊 FOX REACT
-_G.Vector = Vector3.new(math.huge, math.huge, math.huge)
-local original
-original = hookmetamethod(game, "__namecall", function(self, ...)
-    local args = { ... }
-    local method = getnamecallmethod()
-    if not checkcaller() and method == "FireServer" and self.Name == "Kick" then
-        args[6] = _G.Vector
-        return original(self, unpack(args))
-    end
-    return original(self, ...)
-end)
+local function createButton(text, posY, callback) local button = Instance.new("TextButton", frame) button.Size = UDim2.new(1, -20, 0, 30) button.Position = UDim2.new(0, 10, 0, posY) button.BackgroundColor3 = Color3.fromRGB(60, 60, 60) button.TextColor3 = Color3.new(1, 1, 1) button.Text = text button.Font = Enum.Font.SourceSansBold button.TextSize = 16 button.MouseButton1Click:Connect(callback) end
 
--- 🧬 VECTOZ REACT
-_G.Vector = Vector3.new(math.huge, math.huge, math.huge)
-local originalVectoz
-originalVectoz = hookmetamethod(game, "__namecall", function(self, ...)
-    local args = { ... }
-    local method = getnamecallmethod()
-    if not checkcaller() and method == "FireServer" and self.Name == "Kick" then
-        args[6] = _G.Vector
-        return originalVectoz(self, unpack(args))
-    end
-    return originalVectoz(self, ...)
-end)
+createButton("Kenya React", 10, function() _G.Vector = Vector3.new(math.huge, math.huge, math.huge) local original original = hookmetamethod(game, "__namecall", function(self, ...) local args = { ... } local method = getnamecallmethod() if not checkcaller() and method == "FireServer" and self.Name == "Kick" then args[6] = _G.Vector return original(self, unpack(args)) end return original(self, ...) end) end)
 
--- 🧤 KEEPZ REACT
-local player = game.Players.LocalPlayer
-local originalKeepz
-originalKeepz = hookmetamethod(game, "__namecall", function(self, ...)
-    local args = { ... }
-    local method = getnamecallmethod()
-    if not checkcaller() and method == "FireServer" and tostring(self) == "Dribble" then
-        args[2] = player.Character.Humanoid:FindFirstChild("LLCL")
-        return originalKeepz(self, unpack(args))
-    end
-    return originalKeepz(self, ...)
-end)
+createButton("Nanito React", 50, function() _G.Vector = Vector3.new(math.huge, math.huge, math.huge) local originalVectoz originalVectoz = hookmetamethod(game, "__namecall", function(self, ...) local args = { ... } local method = getnamecallmethod() if not checkcaller() and method == "FireServer" and self.Name == "Kick" then args[6] = _G.Vector return originalVectoz(self, unpack(args)) end return originalVectoz(self, ...) end) end)
 
--- 🦵 TUNAZ REACT (manual con K)
-local mouse = player:GetMouse()
-mouse.KeyDown:Connect(function(key)
-    if key:lower() == "k" then
-        for _, d in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
-            if d:IsA("RemoteEvent") and d.Name:find("React") then
-                d:FireServer(nil, Vector3.new(math.huge, math.huge, math.huge), CFrame.new())
-            end
-        end
-    end
-end)
+createButton("Cholo React", 90, function() local originalKeepz originalKeepz = hookmetamethod(game, "__namecall", function(self, ...) local args = { ... } local method = getnamecallmethod() if not checkcaller() and method == "FireServer" and tostring(self) == "Dribble" then args[2] = player.Character.Humanoid:FindFirstChild("LLCL") return originalKeepz(self, unpack(args)) end return originalKeepz(self, ...) end) end)
 
--- 💣 ALZ REACT (Pastebin externo)
-loadstring(game:HttpGet("https://pastebin.com/raw/GrePU9TQ"))()
+createButton("Savage React (K)", 130, function() mouse.KeyDown:Connect(function(key) if key:lower() == "k" then for _, d in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do if d:IsA("RemoteEvent") and d.Name:find("React") then d:FireServer(nil, Vector3.new(math.huge, math.huge, math.huge), CFrame.new()) end end end end) end)
 
--- 🔁 INFINITE DRIBBLE HELPER GUI
-local character = player.Character or player.CharacterAdded:Wait()
-local ball = workspace.TPSSystem.TPS
-local runService = game:GetService("RunService")
-local userInput = game:GetService("UserInputService")
-local followBall = false
-local isMovingManually = false
+createButton("Auto Dribble (C)", 170, function() followBall = not followBall end)
 
--- GUI
-local gui = Instance.new("ScreenGui", game.CoreGui)
-local toggleButton = Instance.new("TextButton", gui)
-toggleButton.Size = UDim2.new(0, 180, 0, 40)
-toggleButton.Position = UDim2.new(0, 20, 0, 300)
-toggleButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-toggleButton.Text = "Toggle Infinite Dribble [C]"
-toggleButton.TextColor3 = Color3.new(1, 1, 1)
-toggleButton.Font = Enum.Font.SourceSansBold
-toggleButton.TextSize = 18
-toggleButton.Draggable = true
+userInput.InputBegan:Connect(function(input, gameProcessed) if input.KeyCode == Enum.KeyCode.C and not gameProcessed then followBall = not followBall end end)
 
-toggleButton.MouseButton1Click:Connect(function()
-    followBall = not followBall
-    print("[KTC DRIBBLE] GUI Toggle:", followBall and "ON" or "OFF")
-end)
+userInput.InputBegan:Connect(function(input) if input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType == Enum.UserInputType.MouseMovement then isMovingManually = true end end)
 
-local function follow()
-	if followBall and not isMovingManually then
-		character:WaitForChild("Humanoid"):MoveTo(ball.Position)
-	end
-end
+userInput.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType == Enum.UserInputType.MouseMovement then isMovingManually = false end end)
 
-userInput.InputBegan:Connect(function(input, gameProcessed)
-	if input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType == Enum.UserInputType.MouseMovement then
-		isMovingManually = true
-	end
-end)
+runService.RenderStepped:Connect(function() if followBall and not isMovingManually and character and character:FindFirstChild("Humanoid") then character.Humanoid:MoveTo(ball.Position) end end)
 
-userInput.InputEnded:Connect(function(input, gameProcessed)
-	if input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType == Enum.UserInputType.MouseMovement then
-		isMovingManually = false
-	end
-end)
+player.CharacterAdded:Connect(function(char) character = char end)
 
-userInput.InputBegan:Connect(function(input, gameProcessed)
-	if input.KeyCode == Enum.KeyCode.C and not gameProcessed then
-		followBall = not followBall
-		print("[KTC DRIBBLE] Hotkey C Toggle:", followBall and "ON" or "OFF")
-	end
-end)
-
-runService.RenderStepped:Connect(function()
-	if followBall then follow() end
-end)
-
-player.CharacterAdded:Connect(function(char)
-	character = char
-end)
